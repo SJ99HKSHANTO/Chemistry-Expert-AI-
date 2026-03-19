@@ -74,8 +74,23 @@ export default function App() {
         const audioData = await chemistryService.generateSpeech(response.voiceText, response.language);
         if (audioData) {
           if (audioRef.current) {
-            audioRef.current.src = `data:audio/mp3;base64,${audioData}`;
-            audioRef.current.play();
+            try {
+              // Convert base64 to Blob for more reliable playback
+              const byteCharacters = atob(audioData);
+              const byteNumbers = new Array(byteCharacters.length);
+              for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+              }
+              const byteArray = new Uint8Array(byteNumbers);
+              const blob = new Blob([byteArray], { type: 'audio/mpeg' });
+              const url = URL.createObjectURL(blob);
+              
+              audioRef.current.src = url;
+              audioRef.current.onended = () => URL.revokeObjectURL(url);
+              await audioRef.current.play();
+            } catch (playError) {
+              console.error("Audio playback failed:", playError);
+            }
           }
         }
       }
