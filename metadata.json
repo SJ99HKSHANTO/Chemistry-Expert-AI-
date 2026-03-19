@@ -1,0 +1,7 @@
+{
+  "name": "Chemistry Expert AI",
+  "description": "An interactive chemistry teacher and voice agent that explains complex chemical reactions with visual support and session history.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
